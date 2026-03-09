@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The IRA Erasure — What America Gave Up</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700;800;900&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg:      #f8f4ef;
+  --surface: #ffffff;
+  --surface2:#f2ede6;
+  --border:  #ddd6cc;
+  --text:    #2c2820;
+  --dim:     #7a6e64;
+  --faint:   #a89e94;
+  --ira:     #1a6b3c;
+  --ira-dim: rgba(26,107,60,0.10);
+  --obbba:   #b5200f;
+  --obbba-dim: rgba(181,32,15,0.08);
+  --amber:   #8a5000;
+  --amber-dim: rgba(138,80,0,0.09);
+  --white:   #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  border-bottom: 1px solid var(--border);
+  padding: 56px 0 48px;
+  text-align: center;
+}
+.kicker {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--obbba);
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+h1 em {
+  color: var(--obbba);
+  font-style: normal;
+}
+.deck {
+  font-size: 1.1rem;
+  color: var(--dim);
+  max-width: 640px;
+  margin: 16px auto 0;
+  line-height: 1.65;
+  font-weight: 300;
+}
+.byline {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--faint);
+  letter-spacing: 0.1em;
+  margin-top: 28px;
+}
+
+/* ── LAYOUT ── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+.wide {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ── SECTION ── */
+section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--border);
+}
+section:last-child { border-bottom: none; }
+
+.section-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 12px;
+}
+.section-label span { color: var(--amber); }
+
+h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.section-body {
+  font-size: 0.97rem;
+  color: var(--dim);
+  max-width: 680px;
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+
+/* ── LEGEND ── */
+.legend {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.leg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+.leg-line {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+}
+.leg-dash {
+  width: 24px;
+  height: 0;
+  border-top: 3px dashed;
+  opacity: 0.9;
+}
+
+/* ── BIG DAMAGE NUMBERS ── */
+.damage-strip {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.damage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.damage-cell {
+  padding: 32px 28px;
+  border-right: 1px solid var(--border);
+}
+.damage-cell:last-child { border-right: none; }
+.damage-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 10px;
+}
+.damage-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--obbba);
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.damage-sub {
+  font-size: 0.8rem;
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+/* ── CHART CARDS ── */
+.chart-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 8px;
+}
+@media (max-width: 760px) {
+  .chart-grid-2 { grid-template-columns: 1fr; }
+}
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 22px 22px 0;
+  display: flex;
+  flex-direction: column;
+}
+.chart-card.full { grid-column: span 2; }
+@media (max-width: 760px) { .chart-card.full { grid-column: span 1; } }
+.chart-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.chart-wrap { position: relative; height: 240px; flex-shrink: 0; }
+.chart-card.full .chart-wrap { height: 300px; }
+.chart-note {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  margin-top: 12px;
+  padding: 10px 0 14px;
+  border-top: 1px solid var(--border);
+}
+.chart-note::before {
+  content: "SOURCE  ";
+  color: var(--amber);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+/* ── INLINE CALLOUT ── */
+.callout {
+  background: var(--amber-dim);
+  border-left: 3px solid var(--amber);
+  padding: 14px 18px;
+  margin: 28px 0;
+  max-width: 680px;
+}
+.callout p {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+.callout strong { color: var(--amber); }
+
+/* ── COMPARISON TABLE ── */
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-top: 8px;
+}
+.comp-table thead tr {
+  border-bottom: 2px solid var(--border);
+  background: var(--surface2);
+}
+.comp-table thead th {
+  padding: 10px 16px;
+  text-align: left;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--faint);
+}
+.comp-table thead th.col-ira { color: var(--ira); }
+.comp-table thead th.col-obbba { color: var(--obbba); }
+.comp-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+.comp-table tbody tr:hover { background: var(--surface2); }
+.comp-table td {
+  padding: 10px 16px;
+  vertical-align: top;
+  line-height: 1.4;
+  color: var(--dim);
+}
+.comp-table td:first-child {
+  font-weight: 500;
+  color: var(--text);
+}
+.comp-table .v-ira {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--ira);
+}
+.comp-table .v-obbba {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--obbba);
+}
+.comp-table .v-delta {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--amber);
+  background: var(--amber-dim);
+  padding: 2px 8px;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* ── JOB QUALITY STATS ── */
+.job-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 24px 0 32px;
+}
+.job-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--ira);
+  padding: 14px 16px;
+}
+.job-stat .js-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--ira);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.job-stat .js-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  line-height: 1.5;
+}
+.job-stat .js-src {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--faint);
+  margin-top: 5px;
+}
+.job-type-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 16px 0 28px;
+}
+.job-type {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+}
+.job-type .jt-count {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--amber);
+  white-space: nowrap;
+}
+.job-type .jt-name {
+  font-size: 0.82rem;
+  color: var(--dim);
+  line-height: 1.3;
+}
+
+/* ── PROPONENTS SECTION ── */
+.proponent-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+@media (max-width: 720px) { .proponent-grid { grid-template-columns: 1fr; } }
+.proponent-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+}
+.pc-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 6px;
+}
+.pc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.pc-arg {
+  font-size: 0.88rem;
+  color: var(--dim);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.pc-evidence {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.62rem;
+  line-height: 1.6;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+  letter-spacing: 0.02em;
+}
+.pc-evidence.supports { color: var(--ira); background: var(--ira-dim); }
+.pc-evidence.mixed    { color: var(--amber); background: var(--amber-dim); }
+.pc-evidence.contradicted { color: var(--obbba); background: var(--obbba-dim); }
+.pc-evidence::before { font-weight: 700; margin-right: 6px; }
+.pc-evidence.supports::before { content: "DATA: SUPPORTS ✓"; }
+.pc-evidence.mixed::before    { content: "DATA: MIXED ≈"; }
+.pc-evidence.contradicted::before { content: "DATA: CONTRADICTED ✗"; }
+
+/* ── SOURCES ── */
+.sources-section {
+  padding: 40px 0 60px;
+}
+.sources-section h3 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 20px;
+}
+.sources-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 40px;
+}
+@media (max-width: 600px) { .sources-grid { grid-template-columns: 1fr; } }
+.sources-grid li {
+  list-style: none;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--faint);
+  letter-spacing: 0.03em;
+  line-height: 1.7;
+}
+.sources-grid li::before { content: "↗ "; color: var(--amber); }
+.sources-grid a { color: var(--dim); text-decoration: none; }
+.sources-grid a:hover { color: var(--ira); }
+.methodology {
+  margin-top: 20px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.59rem;
+  color: var(--faint);
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  max-width: 800px;
+}
+</style>
+</head>
+<body>
+
+<!-- ── MASTHEAD ── -->
+<div class="masthead">
+  <div class="container">
+    <div class="kicker">Economic Analysis · 2020–2035</div>
+    <h1>The IRA <em>Erasure</em></h1>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.1rem,2.5vw,1.6rem);font-weight:600;color:var(--dim);letter-spacing:0.04em;margin-top:4px;">What America Gave Up</div>
+    <p class="deck">The Inflation Reduction Act sparked the largest clean energy manufacturing investment cycle in U.S. history. The One Big Beautiful Bill Act (July 2025) erased most of it. This is the economic gap between the two futures.</p>
+    <div class="byline">DATA SOURCES: RHODIUM GROUP · PRINCETON REPEAT · ENERGY INNOVATION · CBO/JCT · DOE · EIA · BLOOMBERGNEF · E2</div>
+  </div>
+</div>
+
+<!-- ── DAMAGE STRIP ── -->
+<div class="damage-strip">
+  <div class="wide">
+    <div class="damage-grid">
+      <div class="damage-cell">
+        <div class="damage-label">Investment Foregone (through 2035)</div>
+        <div class="damage-val">$500B–1T</div>
+        <div class="damage-sub">vs. ~$290B/yr clean energy investment pace under IRA</div>
+      </div>
+      <div class="damage-cell">
+        <div class="damage-label">Jobs Lost vs. IRA Trajectory (2030)</div>
+        <div class="damage-val">−760K</div>
+        <div class="damage-sub">Net −15,000 already recorded in 2025 alone</div>
+      </div>
+      <div class="damage-cell">
+        <div class="damage-label">Household Energy Cost Swing (2035)</div>
+        <div class="damage-val">$1,100/yr</div>
+        <div class="damage-sub">From −$930 IRA savings to +$192 OBBBA increase</div>
+      </div>
+      <div class="damage-cell">
+        <div class="damage-label">Wholesale Electricity Prices (2035)</div>
+        <div class="damage-val">+74%</div>
+        <div class="damage-sub">Above IRA baseline; +25% by 2030</div>
+      </div>
+      <div class="damage-cell">
+        <div class="damage-label">Clean Power Capacity Foregone</div>
+        <div class="damage-val">−340 GW</div>
+        <div class="damage-sub">By 2035 vs. IRA intact trajectory</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SECTION 1: INVESTMENT ── -->
+<section>
+  <div class="container">
+    <div class="section-label">01 / Capital Investment <span>↓ $500B–$1T</span></div>
+    <h2>The investment boom that won't happen</h2>
+    <p class="section-body">
+      In the two years after the IRA passed, U.S. clean energy investment surged 71% — from $288B to $493B — as manufacturers raced to claim manufacturing tax credits and build domestic supply chains. Goldman Sachs projected ~$290B/year through 2032. The OBBBA terminated or curtailed the credits driving that investment. In 2025, the sector recorded its first net capital outflow since 2022: $34.8B in cancellations against $12.3B in new announcements.
+    </p>
+
+    <div class="callout">
+      <p><strong>Notable cancellations in 2025:</strong> GM's $4.3B Orion EV plant (Michigan), Freyr Battery's $2.6B Georgia factory, Kore Power's $1.2B Arizona battery facility. ~$19.9B in losses fell in Republican-held congressional districts — the same districts that received ~85% of all IRA investment.</p>
+    </div>
+
+    <div class="legend">
+      <div class="leg"><div class="leg-line" style="background:var(--amber)"></div> Actual data</div>
+      <div class="leg"><div class="leg-dash" style="border-color:var(--ira)"></div> IRA intact (projected)</div>
+      <div class="leg"><div class="leg-dash" style="border-color:var(--obbba)"></div> Post-OBBBA (projected)</div>
+    </div>
+
+    <div class="chart-card full">
+      <div class="chart-name">Annual U.S. Clean Energy Investment ($B)</div>
+      <div class="chart-wrap"><canvas id="investmentChart"></canvas></div>
+      <div class="chart-note">ACTUAL: RHODIUM GROUP / CLEAN INVESTMENT MONITOR · PROJECTED: GOLDMAN SACHS (IRA) · ENERGY INNOVATION / RHODIUM (OBBBA)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 2: JOBS ── -->
+<section>
+  <div class="container">
+    <div class="section-label">02 / Employment <span>↓ 760,000 jobs by 2030</span></div>
+    <h2>Three years of job creation, then a cliff</h2>
+    <p class="section-body">
+      From 2022 through 2024, the IRA directly drove 42,000 new manufacturing jobs in solar, wind, and batteries annually — while overall U.S. manufacturing shed 55,000 jobs in the same period. These weren't minimum-wage service jobs: IRA credits required projects to pay <strong>prevailing wages</strong> and use <strong>registered apprenticeships</strong> to receive full credit value (a 5x multiplier), directly incentivizing high-quality employment. Unionization in clean energy hit a record 12.4% in 2023 — the first time it surpassed the broader energy sector average. Energy Innovation models a 760,000-job loss vs. the IRA trajectory by 2030.
+    </p>
+
+    <div class="job-stats">
+      <div class="job-stat">
+        <div class="js-val">12.4%</div>
+        <div class="js-label">Union density in clean energy — record high, first time surpassing energy sector average</div>
+        <div class="js-src">DOE USEER 2024</div>
+      </div>
+      <div class="job-stat">
+        <div class="js-val">5×</div>
+        <div class="js-label">Tax credit multiplier for projects paying prevailing wage + registered apprenticeship</div>
+        <div class="js-src">IRS / Treasury IRA Rules</div>
+      </div>
+      <div class="job-stat">
+        <div class="js-val">$56K</div>
+        <div class="js-label">Median annual wage, wind turbine technicians (vs. ~$46K U.S. median)</div>
+        <div class="js-src">BLS Occupational Outlook</div>
+      </div>
+      <div class="job-stat">
+        <div class="js-val">$169B</div>
+        <div class="js-label">Projected new wages from IRA-linked manufacturing projects if completed</div>
+        <div class="js-src">E2 / IMPLAN Economic Impact 2024</div>
+      </div>
+    </div>
+
+    <p class="section-body" style="margin-bottom:12px;">Jobs announced by sector (E2 tracker, Aug. 2024):</p>
+    <div class="job-type-row">
+      <div class="job-type"><span class="jt-count">62,875</span><span class="jt-name">EV &amp; electric vehicle manufacturing</span></div>
+      <div class="job-type"><span class="jt-count">29,242</span><span class="jt-name">Solar &amp; wind manufacturing</span></div>
+      <div class="job-type"><span class="jt-count">24,835</span><span class="jt-name">Batteries &amp; energy storage</span></div>
+      <div class="job-type"><span class="jt-count">3,568</span><span class="jt-name">Clean fuels production</span></div>
+      <div class="job-type"><span class="jt-count">2,348</span><span class="jt-name">Transmission &amp; distribution</span></div>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-name">Net Clean Energy Manufacturing Jobs Added (K)</div>
+        <div class="chart-wrap"><canvas id="jobsChart"></canvas></div>
+        <div class="chart-note">ACTUAL: DOE USEER 2024 · E2 TRACKER · PROJECTED: ENERGY INNOVATION</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Clean Energy Manufacturing Construction Spend ($B/yr)</div>
+        <div class="chart-wrap"><canvas id="mfgChart"></canvas></div>
+        <div class="chart-note">ACTUAL: FED RESERVE BANK OF BOSTON · PROJECTED: RHODIUM GROUP</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 3: ENERGY COSTS ── -->
+<section>
+  <div class="container">
+    <div class="section-label">03 / Consumer & Industrial Costs <span>↑ $1,100/yr household swing</span></div>
+    <h2>Cheap energy was within reach</h2>
+    <p class="section-body">
+      As new clean capacity lowered wholesale prices, the IRA trajectory pointed toward households saving $730–$1,135/year by 2035. The OBBBA flips that to a projected $78–$192/year increase. Wholesale electricity prices — which set the floor for industrial and consumer bills — are projected to rise 74% above the IRA baseline by 2035, adding $7–11B/year to industrial energy costs and eroding U.S. manufacturing competitiveness.
+    </p>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-name">Household Energy Cost Delta vs. 2022 ($/yr)</div>
+        <div class="chart-wrap"><canvas id="householdChart"></canvas></div>
+        <div class="chart-note">RHODIUM GROUP · ENERGY INNOVATION PROJECTIONS</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Wholesale Electricity Price Index (2022 = 100)</div>
+        <div class="chart-wrap"><canvas id="wholesaleChart"></canvas></div>
+        <div class="chart-note">ENERGY INNOVATION POLICY & TECHNOLOGY PROJECTIONS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 4: CAPACITY ── -->
+<section>
+  <div class="container">
+    <div class="section-label">04 / Power Generation Capacity <span>↓ 340 GW by 2035</span></div>
+    <h2>The grid that won't get built</h2>
+    <p class="section-body">
+      2024 was a record year — 30+ GW of utility-scale solar and 10.3 GW of battery storage added, with solar accounting for 58% of all new U.S. electricity capacity. Princeton's REPEAT Project projected that trajectory accelerating to ~100 GW/year of combined additions by 2030. The OBBBA — by eliminating wind and solar credits for projects after 2027 — cuts that buildout 53–59%.
+    </p>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-name">Annual Clean Capacity Additions (GW)</div>
+        <div class="chart-wrap"><canvas id="capacityChart"></canvas></div>
+        <div class="chart-note">ACTUAL: EIA · PROJECTED: PRINCETON REPEAT (IRA) · RHODIUM GROUP (OBBBA)</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Cumulative Clean Capacity Gap vs. IRA Baseline (GW)</div>
+        <div class="chart-wrap"><canvas id="gapChart"></canvas></div>
+        <div class="chart-note">GW OF GENERATION FOREGONE UNDER OBBBA · PRINCETON / RHODIUM PROJECTIONS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROPONENTS SECTION ── -->
+<section>
+  <div class="container">
+    <div class="section-label">05 / The Other Side <span>What proponents argued</span></div>
+    <h2>The case made for the OBBBA</h2>
+    <p class="section-body">
+      Four arguments made by OBBBA supporters deserve honest evaluation. Each is presented alongside what independent data and economic modeling actually shows. Where evidence supports or is silent on a claim it is marked as such; where modeling contradicts it, that is noted too.
+    </p>
+
+    <div class="proponent-grid">
+
+      <div class="proponent-card">
+        <div class="pc-label">Argument 1 — Fiscal</div>
+        <div class="pc-title">IRA credits were ballooning out of control</div>
+        <p class="pc-arg">JCT's cost estimate for IRA energy credits grew from $391B (2022) to a projected $870B–$1.1T as utilization surpassed forecasts. Proponents argued the open-ended, uncapped credits represented uncontrolled mandatory spending. The OBBBA eliminates ~$496–$540B of that over 10 years.</p>
+        <div class="pc-evidence mixed">The cost escalation is real and documented. However, the economic activity those credits generated — investment, jobs, tax revenue — partially offsets the fiscal savings. CBO does not model the dynamic multiplier effects of canceling investment incentives mid-cycle.</div>
+      </div>
+
+      <div class="proponent-card">
+        <div class="pc-label">Argument 2 — National Security</div>
+        <div class="pc-title">Stop Chinese firms from claiming U.S. tax credits</div>
+        <p class="pc-arg">The IRA had FEOC (Foreign Entity of Concern) restrictions only on EV credits. The OBBBA extended FEOC bars to six additional credits, preventing companies with material ties to China, Russia, North Korea, or Iran from claiming U.S. manufacturing and power generation subsidies. This provision has broad bipartisan support.</p>
+        <div class="pc-evidence supports">Independent analysts broadly agree FEOC restrictions are legitimate national security policy. The Bipartisan Policy Center found "broad bipartisan support for increasing domestic manufacturing and reducing reliance on Chinese manufacturing." The FEOC expansion is the most defensible provision in the OBBBA on the evidence.</div>
+      </div>
+
+      <div class="proponent-card">
+        <div class="pc-label">Argument 3 — Preserved &amp; Expanded</div>
+        <div class="pc-title">The OBBBA didn't kill all clean energy policy</div>
+        <p class="pc-arg">Several credits were preserved or expanded: nuclear power credits unchanged; geothermal credits intact; Section 45Q carbon capture rates <em>increased</em>; Section 45Z clean fuels extended through 2029; 100% bonus depreciation made permanent (broadly pro-investment). Proponents argue this represents a technology-neutral pivot away from mandating wind and solar.</p>
+        <div class="pc-evidence mixed">Accurate as stated. Nuclear and carbon capture receive continued support. However, the preserved credits are far smaller in scale: wind and solar represented the vast majority of the IRA's capacity-building effect. The CGEP at Columbia notes the preserved portfolio cannot replace the foregone buildout pace.</div>
+      </div>
+
+      <div class="proponent-card">
+        <div class="pc-label">Argument 4 — Macroeconomic</div>
+        <div class="pc-title">The full bill boosts GDP through tax cuts</div>
+        <p class="pc-arg">Tax Foundation projects the OBBBA's full package — primarily the TCJA extension, 100% bonus depreciation, and other business tax cuts — raises long-run GDP by +0.7% and provides a short-run boost of +0.4% to +1.2% (2025–2028). The bill is presented as a net economic positive.</p>
+        <div class="pc-evidence contradicted">The GDP boost comes from the tax cut provisions, not from repealing clean energy credits. Tax Foundation, Rhodium, and Energy Innovation all find the energy provisions specifically are a net GDP negative ($980B–$1.1T drag). The Tax Policy Center separately notes the overall bill "increases debt while modestly boosting the economy" — meaning the growth is deficit-financed.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 6: FULL TABLE ── -->
+<section>
+  <div class="container">
+    <div class="section-label">06 / Full Comparison</div>
+    <h2>The complete ledger</h2>
+    <p class="section-body" style="margin-bottom:24px;">All major economic dimensions of the IRA-intact counterfactual vs. post-OBBBA reality, 2025–2035 horizon.</p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:30%">Metric</th>
+          <th class="col-ira">IRA Intact</th>
+          <th class="col-obbba">Post-OBBBA Reality</th>
+          <th>Delta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Annual clean investment pace (2026–2035)</td>
+          <td><span class="v-ira">~$290B/yr</span></td>
+          <td><span class="v-obbba">~$100–150B/yr</span></td>
+          <td><span class="v-delta">−$500B–1T cumulative</span></td>
+        </tr>
+        <tr>
+          <td>Net clean energy jobs (vs. IRA, by 2030)</td>
+          <td><span class="v-ira">+760,000</span></td>
+          <td><span class="v-obbba">−760,000</span></td>
+          <td><span class="v-delta">~1.5M job swing</span></td>
+        </tr>
+        <tr>
+          <td>Household energy cost change (2035)</td>
+          <td><span class="v-ira">−$730 to −$1,135/yr</span></td>
+          <td><span class="v-obbba">+$78 to +$192/yr</span></td>
+          <td><span class="v-delta">~$900–1,300/yr worse</span></td>
+        </tr>
+        <tr>
+          <td>Wholesale electricity prices (2035 vs. 2022)</td>
+          <td><span class="v-ira">−10 to −20%</span></td>
+          <td><span class="v-obbba">+74% above IRA baseline</span></td>
+          <td><span class="v-delta">~90% price divergence</span></td>
+        </tr>
+        <tr>
+          <td>Clean power capacity additions (2030)</td>
+          <td><span class="v-ira">~100 GW/yr</span></td>
+          <td><span class="v-obbba">~38–40 GW/yr</span></td>
+          <td><span class="v-delta">−60 GW/yr</span></td>
+        </tr>
+        <tr>
+          <td>Cumulative capacity gap (by 2035)</td>
+          <td><span class="v-ira">—</span></td>
+          <td><span class="v-obbba">−340 GW</span></td>
+          <td><span class="v-delta">−340 GW total</span></td>
+        </tr>
+        <tr>
+          <td>GHG emissions trajectory (2035 vs. 2005)</td>
+          <td><span class="v-ira">−43 to −48%</span></td>
+          <td><span class="v-obbba">−26 to −35%</span></td>
+          <td><span class="v-delta">12–21 ppt worse</span></td>
+        </tr>
+        <tr>
+          <td>GDP impact (cumulative through 2035)</td>
+          <td><span class="v-ira">+$237B–$2.7T net</span></td>
+          <td><span class="v-obbba">−$980B to −$1.1T</span></td>
+          <td><span class="v-delta">~$1–3T swing</span></td>
+        </tr>
+        <tr>
+          <td>Industrial energy expenditures (2035)</td>
+          <td><span class="v-ira">Declining</span></td>
+          <td><span class="v-obbba">+$7–11B/yr</span></td>
+          <td><span class="v-delta">Manufacturing cost pressure</span></td>
+        </tr>
+        <tr>
+          <td>Tax credits eliminated (10-year CBO/JCT)</td>
+          <td><span class="v-ira">$496–540B in incentives</span></td>
+          <td><span class="v-obbba">Terminated Sept–Dec 2025</span></td>
+          <td><span class="v-delta">$496–540B foregone</span></td>
+        </tr>
+        <tr>
+          <td>Republican-district clean investment</td>
+          <td><span class="v-ira">~85% of IRA investment</span></td>
+          <td><span class="v-obbba">$19.9B lost; 24,500 jobs cancelled</span></td>
+          <td><span class="v-delta">Largest losses in R districts</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── SOURCES ── -->
+<div class="sources-section">
+  <div class="container">
+    <h3>Sources & Methodology</h3>
+    <ul class="sources-grid">
+      <li><a href="https://rhg.com/research/clean-investment-monitor-tallying-the-two-year-impact-of-the-inflation-reduction-act/" target="_blank">Rhodium Group / Clean Investment Monitor (2024)</a></li>
+      <li><a href="https://rhg.com/research/assessing-the-impacts-of-the-final-one-big-beautiful-bill/" target="_blank">Rhodium Group — Assessing the Final OBBBA (July 2025)</a></li>
+      <li><a href="https://repeatproject.org/" target="_blank">Princeton REPEAT Project</a></li>
+      <li><a href="https://energyinnovation.org/report/updated-economic-impacts-of-u-s-senate-passed-one-big-beautiful-bill-act-energy-provisions/" target="_blank">Energy Innovation Policy & Technology — OBBBA Final Analysis</a></li>
+      <li><a href="https://e2.org/reports/clean-economy-works-two-year-review-2024/" target="_blank">E2 Clean Economy Works — IRA Two-Year Review</a></li>
+      <li><a href="https://e2.org/reports/clean-economy-works-2025-year-end-analysis/" target="_blank">E2 Clean Economy Works — 2025 Year-End Analysis</a></li>
+      <li><a href="https://www.bostonfed.org/publications/current-policy-perspectives/2024/manufacturing-gains-from-green-energy-and-semiconductor-spending.aspx" target="_blank">Federal Reserve Bank of Boston — Manufacturing Gains (2024)</a></li>
+      <li><a href="https://www.energy.gov/sites/default/files/2024-10/USEER%202024_COMPLETE_1002.pdf" target="_blank">DOE — U.S. Energy and Employment Report 2024</a></li>
+      <li><a href="https://www.eia.gov/" target="_blank">EIA — Capacity Addition Data</a></li>
+      <li><a href="https://about.bnef.com/insights/finance/energy-transition-investment-trends/" target="_blank">BloombergNEF — Energy Transition Investment Trends</a></li>
+      <li><a href="https://www.goldmansachs.com/insights/articles/the-us-is-poised-for-an-energy-revolution" target="_blank">Goldman Sachs — IRA Investment Projections</a></li>
+      <li><a href="https://www.crfb.org/blogs/whats-one-big-beautiful-bill-act" target="_blank">CRFB — OBBBA Fiscal Scoring (CBO/JCT)</a></li>
+      <li><a href="https://home.treasury.gov/news/press-releases/jy2521" target="_blank">U.S. Treasury — IRA Tax Credit Utilization</a></li>
+      <li><a href="https://taxfoundation.org/blog/big-beautiful-bill-green-energy-tax-credit-changes/" target="_blank">Tax Foundation — OBBBA Energy Credit Analysis</a></li>
+      <li><a href="https://taxfoundation.org/research/all/federal/big-beautiful-bill-senate-gop-tax-plan/" target="_blank">Tax Foundation — OBBBA Full GDP Projections (+0.7% long-run)</a></li>
+      <li><a href="https://bipartisanpolicy.org/explainer/unpacking-the-feoc-provisions-in-the-one-big-beautiful-bill-act/" target="_blank">Bipartisan Policy Center — FEOC Provisions Analysis</a></li>
+      <li><a href="https://www.energypolicy.columbia.edu/assessing-the-energy-impacts-of-the-one-big-beautiful-bill-act/" target="_blank">Columbia CGEP — Assessing OBBBA Energy Impacts</a></li>
+      <li><a href="https://www.dol.gov/agencies/whd/IRA" target="_blank">DOL — IRA Prevailing Wage &amp; Apprenticeship Requirements</a></li>
+    </ul>
+    <p class="methodology">
+      METHODOLOGY: Projected values interpolated from published model outputs. IRA-intact counterfactual uses Goldman Sachs (investment trajectory), Princeton REPEAT (capacity & emissions), and Rhodium Group (household costs) baselines. Post-OBBBA projections drawn from Rhodium Group "Assessing the Final OBBBA" (July 2025) and Energy Innovation Policy & Technology final OBBBA analysis. Historical data from Rhodium Group Clean Investment Monitor, EIA, DOE USEER, and BloombergNEF. All dollar figures nominal USD. Uncertainty in projections increases significantly beyond 2030.
+    </p>
+  </div>
+</div>
+
+<script>
+Chart.defaults.font.family = "'Share Tech Mono', monospace";
+Chart.defaults.font.size = 10;
+Chart.defaults.color = '#a89e94';
+
+const AMBER  = '#8a5000';
+const IRA    = '#1a6b3c';
+const IRA_F  = 'rgba(26,107,60,0.10)';
+const OBBBA  = '#b5200f';
+const OBBBA_F= 'rgba(181,32,15,0.08)';
+const GRID   = 'rgba(200,190,180,0.6)';
+
+function baseOpts(yFmt) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        backgroundColor: '#ffffff',
+        borderColor: '#ddd6cc',
+        borderWidth: 1,
+        titleColor: '#2c2820',
+        bodyColor: '#7a6e64',
+        titleFont: { family: "'Inter', sans-serif", size: 12, weight: '600' },
+        bodyFont: { family: "'Share Tech Mono', monospace", size: 10 },
+        padding: 10,
+        callbacks: {
+          label: ctx => {
+            const v = ctx.parsed.y;
+            const l = ctx.dataset.label || '';
+            if (yFmt === '$B')  return ` ${l}: $${v}B`;
+            if (yFmt === 'K')   return ` ${l}: ${v > 0 ? '+' : ''}${v}K`;
+            if (yFmt === '$/yr') return ` ${l}: ${v > 0 ? '+' : ''}$${v}/yr`;
+            if (yFmt === 'idx') return ` ${l}: ${v}`;
+            if (yFmt === 'GW')  return ` ${l}: ${v} GW`;
+            return ` ${l}: ${v}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: GRID },
+        ticks: { color: '#484f58' }
+      },
+      y: {
+        grid: { color: GRID },
+        ticks: { color: '#484f58' }
+      }
+    }
+  };
+}
+const D = [5,4];
+
+// ── 1. INVESTMENT ──
+new Chart(document.getElementById('investmentChart'), {
+  type: 'line',
+  data: {
+    labels: ['2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'],
+    datasets: [
+      { label: 'Actual',         data: [144,155,175,239,272,null,null,null,null,null,null,null,null,null,null,null], borderColor: AMBER, backgroundColor:'rgba(210,153,34,0.1)', borderWidth:2.5, pointRadius:4, pointBackgroundColor:AMBER, fill:false, tension:0.3 },
+      { label: 'IRA Intact',     data: [null,null,null,null,272,280,290,295,300,305,310,315,320,325,330,335], borderColor:IRA, backgroundColor:IRA_F, borderWidth:2, pointRadius:3, borderDash:D, fill:'origin', tension:0.3 },
+      { label: 'Post-OBBBA',     data: [null,null,null,null,272,150,130,115,110,108,105,104,103,102,101,100], borderColor:OBBBA, backgroundColor:OBBBA_F, borderWidth:2, pointRadius:3, borderDash:D, fill:false, tension:0.3 }
+    ]
+  },
+  options: {
+    ...baseOpts('$B'),
+    scales: {
+      x: { grid:{color:GRID}, ticks:{color:'#a89e94'} },
+      y: { grid:{color:GRID}, ticks:{color:'#484f58', callback:v=>`$${v}B`}, title:{display:true,text:'Annual Investment ($B)',color:'#a89e94',font:{size:9}} }
+    }
+  }
+});
+
+// ── 2. JOBS ──
+const jobAct = [42,55,68,42,10,-15,null,null,null,null,null];
+new Chart(document.getElementById('jobsChart'), {
+  type:'bar',
+  data:{
+    labels:['2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'],
+    datasets:[
+      { label:'Actual Net Jobs (K)', data:jobAct, backgroundColor:jobAct.map(v=>v==null?'transparent':v>=0?'rgba(210,153,34,0.6)':'rgba(248,81,73,0.55)'), borderColor:jobAct.map(v=>v==null?'transparent':v>=0?AMBER:OBBBA), borderWidth:1.5, order:1 },
+      { label:'IRA Intact (proj.)',  data:[null,null,null,null,null,-15,40,65,80,90,95], type:'line', borderColor:IRA, backgroundColor:'transparent', borderWidth:2, pointRadius:4, borderDash:D, tension:0.3, order:0 },
+      { label:'Post-OBBBA (proj.)', data:[null,null,null,null,null,-15,-30,-55,-75,-90,-105], type:'line', borderColor:OBBBA, backgroundColor:'transparent', borderWidth:2, pointRadius:4, borderDash:D, tension:0.3, order:0 }
+    ]
+  },
+  options:{...baseOpts('K'), scales:{x:{grid:{color:GRID},ticks:{color:'#a89e94'}}, y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>`${v>0?'+':''}${v}K`}}}}
+});
+
+// ── 3. MFG CONSTRUCTION ──
+new Chart(document.getElementById('mfgChart'), {
+  type:'line',
+  data:{
+    labels:['2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'],
+    datasets:[
+      { label:'Actual', data:[72,75,79,120,185,236,140,null,null,null,null,null], borderColor:AMBER, backgroundColor:'rgba(210,153,34,0.1)', borderWidth:2.5, pointRadius:4, fill:false, tension:0.3 },
+      { label:'IRA Intact', data:[null,null,null,null,null,236,250,260,270,278,285,290], borderColor:IRA, borderWidth:2, pointRadius:3, borderDash:D, fill:false, tension:0.3, backgroundColor:'transparent' },
+      { label:'Post-OBBBA', data:[null,null,null,null,null,236,140,110,95,88,85,83], borderColor:OBBBA, borderWidth:2, pointRadius:3, borderDash:D, fill:false, tension:0.3, backgroundColor:'transparent' }
+    ]
+  },
+  options:{...baseOpts('$B'), scales:{x:{grid:{color:GRID},ticks:{color:'#a89e94'}}, y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>`$${v}B`}}}}
+});
+
+// ── 4. HOUSEHOLD ENERGY COSTS ──
+new Chart(document.getElementById('householdChart'), {
+  type:'line',
+  data:{
+    labels:['2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'],
+    datasets:[
+      { label:'IRA Intact — savings', data:[0,-50,-130,-220,-320,-430,-530,-620,-730,-820,-900,-980,-1060,-1135], borderColor:IRA, backgroundColor:IRA_F, borderWidth:2.5, fill:{target:'origin',above:'transparent',below:IRA_F}, tension:0.4, pointRadius:3 },
+      { label:'Post-OBBBA — increase', data:[0,-50,-30,20,40,55,70,82,95,110,130,150,170,192], borderColor:OBBBA, backgroundColor:OBBBA_F, borderWidth:2.5, fill:{target:'origin',above:OBBBA_F,below:'transparent'}, tension:0.4, pointRadius:3 }
+    ]
+  },
+  options:{...baseOpts('$/yr'), scales:{x:{grid:{color:GRID},ticks:{color:'#a89e94'}}, y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>`${v>0?'+':''}$${v}`}}}}
+});
+
+// ── 5. WHOLESALE ELECTRICITY ──
+new Chart(document.getElementById('wholesaleChart'), {
+  type:'line',
+  data:{
+    labels:['2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'],
+    datasets:[
+      { label:'IRA Intact',  data:[100,97,93,90,87,85,83,81,80,79,78,77,76,75], borderColor:IRA, backgroundColor:IRA_F, fill:false, borderWidth:2.5, tension:0.4, pointRadius:3 },
+      { label:'Post-OBBBA', data:[100,97,94,97,102,108,114,120,125,135,148,158,166,174], borderColor:OBBBA, backgroundColor:OBBBA_F, fill:false, borderWidth:2.5, tension:0.4, pointRadius:3 }
+    ]
+  },
+  options:{...baseOpts('idx'), scales:{x:{grid:{color:GRID},ticks:{color:'#a89e94'}}, y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>v}, title:{display:true,text:'Index (2022 = 100)',color:'#a89e94',font:{size:9}}}}}
+});
+
+// ── 6. ANNUAL CAPACITY ──
+new Chart(document.getElementById('capacityChart'), {
+  type:'bar',
+  data:{
+    labels:['2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'],
+    datasets:[
+      { label:'Actual (GW)', data:[27,30,32,32,49,28,null,null,null,null,null], backgroundColor:'rgba(210,153,34,0.6)', borderColor:AMBER, borderWidth:1.5, order:1 },
+      { label:'IRA Intact (proj.)', data:[null,null,null,null,49,55,72,85,92,97,100], type:'line', borderColor:IRA, backgroundColor:'transparent', borderWidth:2.5, pointRadius:4, borderDash:D, tension:0.3, order:0 },
+      { label:'Post-OBBBA (proj.)', data:[null,null,null,null,49,28,30,28,30,33,38], type:'line', borderColor:OBBBA, backgroundColor:'transparent', borderWidth:2.5, pointRadius:4, borderDash:D, tension:0.3, order:0 }
+    ]
+  },
+  options:{...baseOpts('GW'), scales:{x:{grid:{color:GRID},ticks:{color:'#a89e94'}}, y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>`${v} GW`}}}}
+});
+
+// ── 7. CUMULATIVE GAP ──
+const iraAdds  = [55,72,85,92,97,100,100,100,100,100,100];
+const obAdds   = [28,30,28,30,33,38, 40, 40, 40, 40, 40];
+let cum = 0;
+const gapData = iraAdds.map((v,i) => { cum += (v - obAdds[i]); return cum; });
+
+new Chart(document.getElementById('gapChart'), {
+  type:'line',
+  data:{
+    labels:['2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'],
+    datasets:[{
+      label:'GW Foregone vs. IRA Baseline',
+      data: gapData,
+      borderColor:OBBBA,
+      backgroundColor:OBBBA_F,
+      fill:'origin',
+      borderWidth:2.5,
+      tension:0.4,
+      pointRadius:4,
+      pointBackgroundColor:OBBBA
+    }]
+  },
+  options:{
+    ...baseOpts('GW'),
+    plugins:{ ...baseOpts('GW').plugins, legend:{display:false} },
+    scales:{
+      x:{grid:{color:GRID},ticks:{color:'#a89e94'}},
+      y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>`−${v} GW`}, title:{display:true,text:'GW Foregone vs. IRA Intact',color:'#a89e94',font:{size:9}}}
+    }
+  }
+});
+</script>
+</body>
+</html>
