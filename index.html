@@ -250,6 +250,69 @@ h2 {
 }
 .callout strong { color: var(--amber); }
 
+/* ── MODEL STAT CARDS ── */
+.model-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  margin: 24px 0 32px;
+}
+.ms-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--obbba);
+  padding: 16px 18px;
+}
+.ms-card.credit {
+  border-top-color: var(--amber);
+}
+.ms-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--obbba);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.ms-card.credit .ms-val { color: var(--amber); }
+.ms-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  line-height: 1.5;
+}
+.ms-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--faint);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  margin: 4px 0 6px;
+  flex-wrap: wrap;
+}
+.chart-legend span {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chart-legend span::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 2px;
+}
+.chart-legend .leg-ira::before   { background: #1a6b3c; }
+.chart-legend .leg-obbba::before { background: #b5200f; }
+
 /* ── COMPARISON TABLE ── */
 .comp-table {
   width: 100%;
@@ -682,10 +745,84 @@ h2 {
   </div>
 </section>
 
-<!-- ── SECTION 6: FULL TABLE ── -->
+<!-- ── SECTION 6: ORIGINAL MODEL ── -->
 <section>
   <div class="container">
-    <div class="section-label">06 / Full Comparison</div>
+    <div class="section-label">06 / Our Model <span>Original analysis — not citing third parties</span></div>
+    <h2>Running the numbers ourselves</h2>
+    <p class="section-body">The projections on this page draw from published third-party analyses. But those analyses are themselves models with assumptions. We built our own — an original sectoral investment model, calibrated to 2023 actuals, to generate independent projections for both scenarios. The charts below are ours.</p>
+
+    <div class="callout" style="margin-bottom: 32px;">
+      <p><strong>Model structure:</strong> We model five clean energy sectors — solar, wind, battery storage, clean manufacturing, and grid infrastructure — with separate investment trajectories for each. Annual investment in each sector is driven by three forces: (1) <em>organic market growth</em> from technology cost declines and rising demand; (2) a <em>tax credit elasticity</em> parameter calibrated from empirical investment-subsidy literature — specifically, how strongly a change in effective credit rate shifts project finance decisions; and (3) a <em>policy uncertainty discount</em> under OBBBA, based on the Baker-Bloom-Davis Economic Policy Uncertainty framework, which estimates that rapid policy reversals suppress multi-year capital commitments by 6–15%. The model is calibrated to the 2023 actual: $303B US clean energy investment (BloombergNEF). <em>"Job-years"</em> are direct + first-tier indirect jobs supported by each year's new investment — construction, installation, and manufacturing supply chain — not permanent workforce headcount. Source available at <code>model.py</code> in this repository.</p>
+    </div>
+
+    <div class="model-stats">
+      <div class="ms-card">
+        <div class="ms-val">$2.97T</div>
+        <div class="ms-label">Private investment foregone, 2024–2035</div>
+        <div class="ms-sub">Model projection: $5.73T under IRA vs. $2.77T post-OBBBA</div>
+      </div>
+      <div class="ms-card">
+        <div class="ms-val">11.8M</div>
+        <div class="ms-label">Job-years lost in clean energy construction + manufacturing</div>
+        <div class="ms-sub">22.8M job-years under IRA vs. 11.0M post-OBBBA, 2024–2035</div>
+      </div>
+      <div class="ms-card">
+        <div class="ms-val">579 GW</div>
+        <div class="ms-label">Clean power capacity not built by 2035</div>
+        <div class="ms-sub">1,103 GW under IRA vs. 524 GW post-OBBBA — a 52% shortfall</div>
+      </div>
+      <div class="ms-card credit">
+        <div class="ms-val">$1.09T</div>
+        <div class="ms-label">Tax credits "saved" by OBBBA</div>
+        <div class="ms-sub">The only affirmative fiscal argument for OBBBA — but it trades $1 of public credit for $2.72 less in private investment</div>
+      </div>
+    </div>
+
+    <div class="chart-grid-2" style="margin-top:24px;">
+      <div class="chart-card">
+        <div class="chart-name">Annual private investment trajectory ($B)</div>
+        <div class="chart-legend">
+          <span class="leg-ira">IRA intact</span>
+          <span class="leg-obbba">Post-OBBBA</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="modelInvChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Original model, calibrated to 2023 actuals ($303B). Credit elasticity from Gechert &amp; Rannenberg (2018) meta-analysis. Sectors: solar, wind, storage, clean manufacturing, grid.</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Annual clean capacity additions (GW)</div>
+        <div class="chart-legend">
+          <span class="leg-ira">IRA intact</span>
+          <span class="leg-obbba">Post-OBBBA</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="modelCapChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Calibrated to 2023 actuals: ~38 GW solar, ~8 GW wind, ~12 GW storage (EIA). GW/$ ratios reflect total supply-chain investment, not just project capex.</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Annual job-years created (clean energy construction + manufacturing)</div>
+        <div class="chart-legend">
+          <span class="leg-ira">IRA intact</span>
+          <span class="leg-obbba">Post-OBBBA</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="modelJobsChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Job-years per $B from NREL JEDI model and BLS QCEW sector data. These are annual flows from new investment (construction + supply chain), not cumulative workforce headcount.</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Cumulative investment gap vs. IRA baseline ($B)</div>
+        <div class="chart-legend">
+          <span class="leg-obbba">Private investment foregone</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="modelGapChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Running sum of IRA minus OBBBA annual investment. Reaches $2.97T by 2035. The $1.09T in "saved" tax credits represents about 37 cents on the dollar of investment foregone.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 7: FULL TABLE ── -->
+<section>
+  <div class="container">
+    <div class="section-label">07 / Full Comparison</div>
     <h2>The complete ledger</h2>
     <p class="section-body" style="margin-bottom:24px;">All major economic dimensions of the IRA-intact counterfactual vs. post-OBBBA reality, 2025–2035 horizon.</p>
 
@@ -793,9 +930,11 @@ h2 {
       <li><a href="https://bipartisanpolicy.org/explainer/unpacking-the-feoc-provisions-in-the-one-big-beautiful-bill-act/" target="_blank">Bipartisan Policy Center — FEOC Provisions Analysis</a></li>
       <li><a href="https://www.energypolicy.columbia.edu/assessing-the-energy-impacts-of-the-one-big-beautiful-bill-act/" target="_blank">Columbia CGEP — Assessing OBBBA Energy Impacts</a></li>
       <li><a href="https://www.dol.gov/agencies/whd/IRA" target="_blank">DOL — IRA Prevailing Wage &amp; Apprenticeship Requirements</a></li>
+      <li><a href="model.py">Original Projection Model — model.py (this repository)</a></li>
+      <li><a href="https://www.nrel.gov/analysis/jedi/" target="_blank">NREL — JEDI Jobs &amp; Economic Development Impact Models</a></li>
     </ul>
     <p class="methodology">
-      METHODOLOGY: Projected values interpolated from published model outputs. IRA-intact counterfactual uses Goldman Sachs (investment trajectory), Princeton REPEAT (capacity & emissions), and Rhodium Group (household costs) baselines. Post-OBBBA projections drawn from Rhodium Group "Assessing the Final OBBBA" (July 2025) and Energy Innovation Policy & Technology final OBBBA analysis. Historical data from Rhodium Group Clean Investment Monitor, EIA, DOE USEER, and BloombergNEF. All dollar figures nominal USD. Uncertainty in projections increases significantly beyond 2030.
+      METHODOLOGY: Section 06 presents original analysis — a sectoral investment model built and run for this project, calibrated to 2023 actuals ($303B, BloombergNEF). Credit elasticity parameters are drawn from Gechert &amp; Rannenberg (2018) meta-analysis of investment tax credit literature. Policy uncertainty discount follows the Baker-Bloom-Davis EPU framework. Job-years per $B of investment from NREL JEDI and BLS QCEW. OBBBA credit schedules based on legislative text and Bloomberg Tax analysis of accelerated phase-out provisions. All other sections: projected values interpolated from published model outputs. IRA-intact counterfactual uses Goldman Sachs (investment), Princeton REPEAT (capacity &amp; emissions), and Rhodium Group (household costs) baselines. Post-OBBBA projections from Rhodium Group "Assessing the Final OBBBA" (July 2025) and Energy Innovation Policy &amp; Technology final OBBBA analysis. Historical data: Rhodium Group Clean Investment Monitor, EIA, DOE USEER, BloombergNEF. All dollar figures constant 2023 USD unless noted. Uncertainty in projections increases significantly beyond 2030.
     </p>
   </div>
 </div>
@@ -945,6 +1084,134 @@ new Chart(document.getElementById('capacityChart'), {
     ]
   },
   options:{...baseOpts('GW'), scales:{x:{grid:{color:GRID},ticks:{color:'#a89e94'}}, y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>`${v} GW`}}}}
+});
+
+// ── MODEL CHARTS (original analysis) ──
+const MODEL_YEARS = ['2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'];
+
+// Investment data from model.py output
+const M_IRA_INV   = [324,347,372,399,428,459,494,531,566,585,604,625];
+const M_OB_INV    = [314,298,252,219,201,192,192,196,205,217,232,250];
+
+// Capacity additions
+const M_IRA_CAP   = [62.7,67.0,71.8,76.9,82.5,88.5,95.1,102.3,109.0,112.1,115.5,119.1];
+const M_OB_CAP    = [60.8,57.5,47.5,40.9,37.5,36.1,36.1,36.9,38.6,40.8,43.7,47.3];
+
+// Job-years (in thousands for readability on chart)
+const M_IRA_JOBS  = [1319,1407,1503,1606,1717,1838,1969,2111,2242,2303,2369,2441];
+const M_OB_JOBS   = [1279,1207,1011, 875, 800, 765, 761, 776, 808, 850, 905, 974];
+
+// Cumulative investment gap
+let cumGap = 0;
+const M_CUM_GAP = M_IRA_INV.map((v,i) => {
+  cumGap += (v - M_OB_INV[i]);
+  return Math.round(cumGap);
+});
+
+new Chart(document.getElementById('modelInvChart'), {
+  type: 'line',
+  data: {
+    labels: MODEL_YEARS,
+    datasets: [
+      { label: 'IRA Intact', data: M_IRA_INV, borderColor: IRA, backgroundColor: IRA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: false, tension: 0.3 },
+      { label: 'Post-OBBBA', data: M_OB_INV, borderColor: OBBBA, backgroundColor: OBBBA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: false, tension: 0.3 }
+    ]
+  },
+  options: {
+    ...baseOpts('$B'),
+    scales: {
+      x: { grid: {color: GRID}, ticks: {color: '#a89e94'} },
+      y: { grid: {color: GRID}, ticks: {color: '#484f58', callback: v => `$${v}B`},
+           title: {display: true, text: 'Annual Investment ($B)', color: '#a89e94', font: {size: 9}} }
+    }
+  }
+});
+
+new Chart(document.getElementById('modelCapChart'), {
+  type: 'line',
+  data: {
+    labels: MODEL_YEARS,
+    datasets: [
+      { label: 'IRA Intact', data: M_IRA_CAP, borderColor: IRA, backgroundColor: IRA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: false, tension: 0.3 },
+      { label: 'Post-OBBBA', data: M_OB_CAP, borderColor: OBBBA, backgroundColor: OBBBA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: false, tension: 0.3 }
+    ]
+  },
+  options: {
+    ...baseOpts('GW'),
+    scales: {
+      x: { grid: {color: GRID}, ticks: {color: '#a89e94'} },
+      y: { grid: {color: GRID}, ticks: {color: '#484f58', callback: v => `${v} GW`},
+           title: {display: true, text: 'Annual Additions (GW)', color: '#a89e94', font: {size: 9}} }
+    }
+  }
+});
+
+new Chart(document.getElementById('modelJobsChart'), {
+  type: 'line',
+  data: {
+    labels: MODEL_YEARS,
+    datasets: [
+      { label: 'IRA Intact', data: M_IRA_JOBS, borderColor: IRA, backgroundColor: IRA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: 'origin', tension: 0.3 },
+      { label: 'Post-OBBBA', data: M_OB_JOBS, borderColor: OBBBA, backgroundColor: OBBBA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: 'origin', tension: 0.3 }
+    ]
+  },
+  options: {
+    ...baseOpts(null),
+    plugins: {
+      ...baseOpts(null).plugins,
+      tooltip: {
+        ...baseOpts(null).plugins.tooltip,
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}K job-years`
+        }
+      }
+    },
+    scales: {
+      x: { grid: {color: GRID}, ticks: {color: '#a89e94'} },
+      y: { grid: {color: GRID}, ticks: {color: '#484f58', callback: v => `${v.toLocaleString()}K`},
+           title: {display: true, text: 'Job-Years (thousands)', color: '#a89e94', font: {size: 9}} }
+    }
+  }
+});
+
+new Chart(document.getElementById('modelGapChart'), {
+  type: 'line',
+  data: {
+    labels: MODEL_YEARS,
+    datasets: [{
+      label: 'Investment Foregone vs. IRA',
+      data: M_CUM_GAP,
+      borderColor: OBBBA,
+      backgroundColor: OBBBA_F,
+      borderWidth: 2.5,
+      pointRadius: 3,
+      fill: 'origin',
+      tension: 0.4
+    }]
+  },
+  options: {
+    ...baseOpts(null),
+    plugins: {
+      ...baseOpts(null).plugins,
+      tooltip: {
+        ...baseOpts(null).plugins.tooltip,
+        callbacks: {
+          label: ctx => ` Cumulative gap: −$${ctx.parsed.y.toLocaleString()}B`
+        }
+      }
+    },
+    scales: {
+      x: { grid: {color: GRID}, ticks: {color: '#a89e94'} },
+      y: { grid: {color: GRID}, ticks: {color: '#484f58', callback: v => `$${v.toLocaleString()}B`},
+           title: {display: true, text: 'Cumulative Gap ($B)', color: '#a89e94', font: {size: 9}} }
+    }
+  }
 });
 
 // ── 7. CUMULATIVE GAP ──
