@@ -819,10 +819,84 @@ h2 {
   </div>
 </section>
 
-<!-- ── SECTION 7: FULL TABLE ── -->
+<!-- ── SECTION 7: FULL MACRO MODEL ── -->
 <section>
   <div class="container">
-    <div class="section-label">07 / Full Comparison</div>
+    <div class="section-label">07 / Full Macro Model <span>Leontief I-O · electricity feedback · fiscal accounting</span></div>
+    <h2>The full economy impact</h2>
+    <p class="section-body">The sectoral model (Section 06) tracked investment, direct jobs, and capacity. This section adds three layers: <strong>supply-chain and income multipliers</strong> (how investment ripples through the whole economy), <strong>electricity price feedback</strong> (how the capacity gap raises energy costs for all industries and households), and <strong>fiscal accounting</strong> (whether the credits cost more than the tax revenue they generate).</p>
+
+    <div class="callout" style="margin-bottom:32px;">
+      <p><strong>How it works:</strong> We built an 8-sector extended Leontief Input-Output model — the tool used by the BEA's RIMS II system, IMPLAN, and the Congressional Budget Office. A <em>technical coefficients matrix A</em> encodes how much each sector buys from every other per dollar of its output (e.g., construction buys 14¢ of steel per dollar of work done). The <em>Leontief inverse L = (I − A)⁻¹</em> — computed here using the open-source <code>pymrio</code> library — tells you the total output ripple across all sectors from any single dollar of investment. A household sector is included so that worker wages, when spent, create a second round of economic activity (the "induced" or Type II effect). <strong>Type II output multipliers</strong> from this model: 3.28× for clean energy installation, 3.39× for clean manufacturing — meaning $1B invested generates $3.3B in total economy-wide output. Electricity price feedback uses the documented merit-order effect ($4/MWh per 100 GW, 40% retail pass-through). Fiscal model accounts for income, payroll, corporate, sales, and property taxes. Source: <code>macro_model.py</code>.</p>
+    </div>
+
+    <div class="model-stats">
+      <div class="ms-card">
+        <div class="ms-val">$4.82T</div>
+        <div class="ms-label">Economy-wide GDP lost, 2024–2035</div>
+        <div class="ms-sub">$9.15T under IRA vs. $4.33T post-OBBBA — all supply-chain and induced waves, import-adjusted</div>
+      </div>
+      <div class="ms-card">
+        <div class="ms-val">54.7M</div>
+        <div class="ms-label">Economy-wide job-years lost</div>
+        <div class="ms-sub">Includes construction workers, manufacturers, engineers, and the service-sector jobs created when they spend their wages</div>
+      </div>
+      <div class="ms-card">
+        <div class="ms-val">$167/yr</div>
+        <div class="ms-label">Average household electricity cost premium by 2035</div>
+        <div class="ms-sub">579 GW capacity gap → +$9.3/MWh retail. Industrial + commercial sectors pay +$24B/yr additional by 2035</div>
+      </div>
+      <div class="ms-card" style="border-top-color: var(--ira);">
+        <div class="ms-val" style="color: var(--ira);">+$271B</div>
+        <div class="ms-label">IRA's net fiscal advantage over OBBBA, 2024–2035</div>
+        <div class="ms-sub">IRA credits cost $1.09T more but generate $1.36T more in tax revenue — the credits are more than self-financing</div>
+      </div>
+    </div>
+
+    <div class="chart-grid-2" style="margin-top:24px;">
+      <div class="chart-card">
+        <div class="chart-name">Economy-wide GDP from clean energy activity ($B/yr)</div>
+        <div class="chart-legend">
+          <span class="leg-ira">IRA intact — all waves</span>
+          <span class="leg-obbba">Post-OBBBA — net of electricity drag</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="macroGdpChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Leontief I-O Type II (pymrio). Includes direct output, indirect supply chain, and induced household consumption. OBBBA figures net of electricity price GDP drag. Import leakage removed for domestic estimate.</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Economy-wide job-years supported annually (millions)</div>
+        <div class="chart-legend">
+          <span class="leg-ira">IRA intact</span>
+          <span class="leg-obbba">Post-OBBBA</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="macroJobsChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Type II employment across all waves — from construction to steel mills to the restaurant workers who serve those crews. Coefficients from BEA QCEW output-per-worker ratios, sector-level.</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Fiscal accounting: annual tax revenue vs. credit expenditure ($B)</div>
+        <div class="chart-legend">
+          <span class="leg-ira">IRA tax revenue generated</span>
+          <span class="leg-obbba">OBBBA tax revenue generated</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="macroFiscalChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Income, payroll, corporate, sales, and property taxes generated by economic activity (lines) vs. tax credit expenditures (dashed). The IRA costs $1.09T more in credits but generates $1.36T more in tax revenues — net +$271B for the public fisc.</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-name">Electricity cost burden: annual premium vs. IRA baseline ($B/yr)</div>
+        <div class="chart-legend">
+          <span class="leg-obbba">Total economy cost premium (OBBBA)</span>
+        </div>
+        <div class="chart-wrap" style="height:260px;"><canvas id="macroElecChart"></canvas></div>
+        <div class="chart-note" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">Merit-order: 100 GW of missing clean capacity raises wholesale prices ~$4/MWh (40% retail pass-through). By 2035: 579 GW gap → +$9.3/MWh retail → $167/yr per household, $24B/yr industrial and commercial.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 8: FULL TABLE ── -->
+<section>
+  <div class="container">
+    <div class="section-label">08 / Full Comparison</div>
     <h2>The complete ledger</h2>
     <p class="section-body" style="margin-bottom:24px;">All major economic dimensions of the IRA-intact counterfactual vs. post-OBBBA reality, 2025–2035 horizon.</p>
 
@@ -930,11 +1004,14 @@ h2 {
       <li><a href="https://bipartisanpolicy.org/explainer/unpacking-the-feoc-provisions-in-the-one-big-beautiful-bill-act/" target="_blank">Bipartisan Policy Center — FEOC Provisions Analysis</a></li>
       <li><a href="https://www.energypolicy.columbia.edu/assessing-the-energy-impacts-of-the-one-big-beautiful-bill-act/" target="_blank">Columbia CGEP — Assessing OBBBA Energy Impacts</a></li>
       <li><a href="https://www.dol.gov/agencies/whd/IRA" target="_blank">DOL — IRA Prevailing Wage &amp; Apprenticeship Requirements</a></li>
-      <li><a href="model.py">Original Projection Model — model.py (this repository)</a></li>
+      <li><a href="model.py">Sectoral Investment Model — model.py (this repository)</a></li>
+      <li><a href="macro_model.py">Full Macro I-O Model — macro_model.py (this repository)</a></li>
       <li><a href="https://www.nrel.gov/analysis/jedi/" target="_blank">NREL — JEDI Jobs &amp; Economic Development Impact Models</a></li>
+      <li><a href="https://apps.bea.gov/iTable/iTable.cfm?reqid=58" target="_blank">BEA — 2022 Industry Input-Output Use Tables</a></li>
+      <li><a href="https://pymrio.readthedocs.io/" target="_blank">pymrio — Open-Source Multi-Regional I-O Library (calc_L)</a></li>
     </ul>
     <p class="methodology">
-      METHODOLOGY: Section 06 presents original analysis — a sectoral investment model built and run for this project, calibrated to 2023 actuals ($303B, BloombergNEF). Credit elasticity parameters are drawn from Gechert &amp; Rannenberg (2018) meta-analysis of investment tax credit literature. Policy uncertainty discount follows the Baker-Bloom-Davis EPU framework. Job-years per $B of investment from NREL JEDI and BLS QCEW. OBBBA credit schedules based on legislative text and Bloomberg Tax analysis of accelerated phase-out provisions. All other sections: projected values interpolated from published model outputs. IRA-intact counterfactual uses Goldman Sachs (investment), Princeton REPEAT (capacity &amp; emissions), and Rhodium Group (household costs) baselines. Post-OBBBA projections from Rhodium Group "Assessing the Final OBBBA" (July 2025) and Energy Innovation Policy &amp; Technology final OBBBA analysis. Historical data: Rhodium Group Clean Investment Monitor, EIA, DOE USEER, BloombergNEF. All dollar figures constant 2023 USD unless noted. Uncertainty in projections increases significantly beyond 2030.
+      METHODOLOGY: Sections 06–07 present original analysis. Section 06: sectoral investment model (model.py) calibrated to 2023 actuals ($303B, BloombergNEF). Credit elasticity from Gechert &amp; Rannenberg (2018) meta-analysis; policy uncertainty discount from Baker-Bloom-Davis EPU framework; OBBBA credit schedules from legislative text and Bloomberg Tax analysis. Section 07: full macroeconomic model (macro_model.py) using Leontief Input-Output framework. 8-sector extended A matrix (7 productive sectors + households) calibrated to BEA 2022 summary Use tables; Leontief inverse computed via pymrio.calc_L; Type II (induced) effects via household income/spending extension; import leakage by sector from BEA import matrix. Electricity price feedback: merit-order effect $4/MWh per 100 GW (40% retail pass-through), from Cludius et al. (2014) and MacCormack et al. (2010). Fiscal model: income, payroll, corporate, sales, and property tax rates from IRS/CBO/OECD. All other sections: projected values from published analyses (see sources above). All dollar figures constant 2023 USD unless noted. Uncertainty increases significantly beyond 2030.
     </p>
   </div>
 </div>
@@ -1084,6 +1161,134 @@ new Chart(document.getElementById('capacityChart'), {
     ]
   },
   options:{...baseOpts('GW'), scales:{x:{grid:{color:GRID},ticks:{color:'#a89e94'}}, y:{grid:{color:GRID},ticks:{color:'#484f58',callback:v=>`${v} GW`}}}}
+});
+
+// ── MACRO MODEL CHARTS (Leontief I-O, fiscal, electricity) ──
+const MAC_YEARS = ['2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'];
+
+// GDP ($B/yr) — Type II I-O, import-adjusted, OBBBA net of electricity drag
+const MAC_IRA_GDP  = [491,530,572,618,668,724,784,851,916,955,996,1041];
+const MAC_OB_GDP   = [476,456,392,342,315,304,306,316,333,354,382,417];
+
+// Economy-wide job-years (millions)
+const MAC_IRA_JOBS = [5.7,6.1,6.6,7.1,7.7,8.3,9.0,9.8,10.5,11.0,11.5,12.0];
+const MAC_OB_JOBS  = [5.5,5.3,4.5,3.9,3.6,3.5,3.5,3.6,3.8,4.1,4.4,4.8];
+
+// Fiscal: tax revenue vs. credit expenditure ($B/yr)
+const MAC_IRA_REV  = [141,152,164,177,192,208,225,244,263,274,286,299];
+const MAC_OB_REV   = [136,130,112,98,90,87,88,91,96,102,110,120];
+const MAC_IRA_CRED = [87,94,100,108,116,125,134,145,155,120,82,43];
+const MAC_OB_CRED  = [85,78,33,13,5,1,0,0,0,0,0,0];
+
+// Electricity cost premium ($B/yr, total economy)
+const MAC_ELEC     = [0.1,0.7,2.3,4.7,7.6,11.1,15.0,19.5,24.2,29.1,34.1,39.1];
+
+new Chart(document.getElementById('macroGdpChart'), {
+  type: 'line',
+  data: {
+    labels: MAC_YEARS,
+    datasets: [
+      { label: 'IRA Intact', data: MAC_IRA_GDP, borderColor: IRA, backgroundColor: IRA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: false, tension: 0.3 },
+      { label: 'Post-OBBBA', data: MAC_OB_GDP, borderColor: OBBBA, backgroundColor: OBBBA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: false, tension: 0.3 }
+    ]
+  },
+  options: {
+    ...baseOpts(null),
+    plugins: {
+      ...baseOpts(null).plugins,
+      tooltip: { ...baseOpts(null).plugins.tooltip, callbacks: { label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y}B` } }
+    },
+    scales: {
+      x: { grid:{color:GRID}, ticks:{color:'#a89e94'} },
+      y: { grid:{color:GRID}, ticks:{color:'#484f58', callback: v => `$${v}B`},
+           title:{display:true,text:'GDP ($B/yr)',color:'#a89e94',font:{size:9}} }
+    }
+  }
+});
+
+new Chart(document.getElementById('macroJobsChart'), {
+  type: 'line',
+  data: {
+    labels: MAC_YEARS,
+    datasets: [
+      { label: 'IRA Intact', data: MAC_IRA_JOBS, borderColor: IRA, backgroundColor: IRA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: 'origin', tension: 0.3 },
+      { label: 'Post-OBBBA', data: MAC_OB_JOBS, borderColor: OBBBA, backgroundColor: OBBBA_F,
+        borderWidth: 2.5, pointRadius: 3, fill: 'origin', tension: 0.3 }
+    ]
+  },
+  options: {
+    ...baseOpts(null),
+    plugins: {
+      ...baseOpts(null).plugins,
+      tooltip: { ...baseOpts(null).plugins.tooltip, callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}M job-years` } }
+    },
+    scales: {
+      x: { grid:{color:GRID}, ticks:{color:'#a89e94'} },
+      y: { grid:{color:GRID}, ticks:{color:'#484f58', callback: v => `${v}M`},
+           title:{display:true,text:'Job-Years (millions)',color:'#a89e94',font:{size:9}} }
+    }
+  }
+});
+
+new Chart(document.getElementById('macroFiscalChart'), {
+  type: 'line',
+  data: {
+    labels: MAC_YEARS,
+    datasets: [
+      { label: 'IRA Tax Revenue', data: MAC_IRA_REV, borderColor: IRA, backgroundColor:'transparent',
+        borderWidth: 2.5, pointRadius: 2, tension: 0.3 },
+      { label: 'OBBBA Tax Revenue', data: MAC_OB_REV, borderColor: OBBBA, backgroundColor:'transparent',
+        borderWidth: 2.5, pointRadius: 2, tension: 0.3 },
+      { label: 'IRA Credits Spent', data: MAC_IRA_CRED, borderColor: IRA, backgroundColor:IRA_F,
+        borderWidth: 1.5, pointRadius: 2, borderDash: D, tension: 0.3 },
+      { label: 'OBBBA Credits Spent', data: MAC_OB_CRED, borderColor: OBBBA, backgroundColor:OBBBA_F,
+        borderWidth: 1.5, pointRadius: 2, borderDash: D, tension: 0.3 }
+    ]
+  },
+  options: {
+    ...baseOpts('$B'),
+    plugins: {
+      ...baseOpts('$B').plugins,
+      legend: { display: true, labels: { font: { family:"'Share Tech Mono',monospace", size:9 }, color:'#7a6e64', boxWidth:18 } }
+    },
+    scales: {
+      x: { grid:{color:GRID}, ticks:{color:'#a89e94'} },
+      y: { grid:{color:GRID}, ticks:{color:'#484f58', callback: v=>`$${v}B`},
+           title:{display:true,text:'$B/yr',color:'#a89e94',font:{size:9}} }
+    }
+  }
+});
+
+new Chart(document.getElementById('macroElecChart'), {
+  type: 'line',
+  data: {
+    labels: MAC_YEARS,
+    datasets: [{
+      label: 'Economy Cost Premium',
+      data: MAC_ELEC,
+      borderColor: OBBBA,
+      backgroundColor: OBBBA_F,
+      borderWidth: 2.5,
+      pointRadius: 3,
+      fill: 'origin',
+      tension: 0.4
+    }]
+  },
+  options: {
+    ...baseOpts(null),
+    plugins: {
+      ...baseOpts(null).plugins,
+      tooltip: { ...baseOpts(null).plugins.tooltip, callbacks: { label: ctx => ` Total economy: +$${ctx.parsed.y}B/yr` } }
+    },
+    scales: {
+      x: { grid:{color:GRID}, ticks:{color:'#a89e94'} },
+      y: { grid:{color:GRID}, ticks:{color:'#484f58', callback: v=>`+$${v}B`},
+           title:{display:true,text:'Additional annual cost vs. IRA ($B)',color:'#a89e94',font:{size:9}} }
+    }
+  }
 });
 
 // ── MODEL CHARTS (original analysis) ──
